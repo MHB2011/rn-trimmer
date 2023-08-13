@@ -17,7 +17,7 @@ interface MarkerProps {
   borderWidth: number;
   onChange?: (start: number, end: number) => void;
   otherOffsetX: SharedValue<number>;
-  gap: number;
+  gapPx: number;
   startValue: number;
   endValue: number;
 }
@@ -31,7 +31,7 @@ export const Marker = ({
   trackHeight,
   onChange,
   otherOffsetX,
-  gap,
+  gapPx,
   startValue,
   endValue,
 }: MarkerProps) => {
@@ -50,8 +50,8 @@ export const Marker = ({
     'worklet';
     const newOffsetX = startX.value + translationX;
 
-    const min = position === 'left' ? 0 : otherOffsetX.value + gap;
-    const max = position === 'left' ? otherOffsetX.value - gap : trackWidth;
+    const min = position === 'left' ? 0 : otherOffsetX.value + gapPx;
+    const max = position === 'left' ? otherOffsetX.value - gapPx : trackWidth;
 
     const clampX = Math.min(Math.max(newOffsetX, min), max);
 

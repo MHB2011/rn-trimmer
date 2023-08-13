@@ -10,7 +10,7 @@ interface TrimmerProps {
   markerSize?: number;
   borderWidth?: number;
   onChange?: (start: number, end: number) => void;
-  gap?: number;
+  gapPx?: number;
 }
 
 export const Trimmer = ({
@@ -20,7 +20,7 @@ export const Trimmer = ({
   markerSize = 24,
   borderWidth = 2,
   onChange,
-  gap = 0,
+  gapPx = 0,
 }: TrimmerProps) => {
   return (
     <View>
@@ -36,7 +36,7 @@ export const Trimmer = ({
               markerSize={markerSize}
               borderWidth={borderWidth}
               onChange={onChange}
-              gap={gap}
+              gapPx={gapPx}
             />
           );
         }}

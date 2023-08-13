@@ -23,7 +23,7 @@ export const App = () => {
             console.log('start', Math.round(start));
             console.log('end', Math.round(end));
           }}
-          gap={50}
+          gapPx={50}
         />
 
         <View>

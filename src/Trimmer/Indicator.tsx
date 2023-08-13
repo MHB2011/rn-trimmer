@@ -15,7 +15,7 @@ interface IndicatorProp {
   markerSize: number;
   borderWidth: number;
   onChange?: (start: number, end: number) => void;
-  gap: number;
+  gapPx: number;
   startValue: number;
   endValue: number;
 }
@@ -26,7 +26,7 @@ export const Indicator = ({
   markerSize,
   borderWidth,
   onChange,
-  gap,
+  gapPx,
   startValue,
   endValue,
 }: IndicatorProp) => {
@@ -57,7 +57,7 @@ export const Indicator = ({
           markerSize={markerSize}
           onChange={onChange}
           otherOffsetX={endOffsetX}
-          gap={gap}
+          gapPx={gapPx}
           startValue={startValue}
           endValue={endValue}
         />
@@ -70,7 +70,7 @@ export const Indicator = ({
           markerSize={markerSize}
           onChange={onChange}
           otherOffsetX={startOffsetX}
-          gap={gap}
+          gapPx={gapPx}
           startValue={startValue}
           endValue={endValue}
         />
