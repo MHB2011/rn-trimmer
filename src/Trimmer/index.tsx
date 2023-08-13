@@ -23,24 +23,22 @@ export const Trimmer = ({
   gapPx = 0,
 }: TrimmerProps) => {
   return (
-    <View>
-      <Track
-        height={height}
-        renderIndicator={(trackWidth: number) => {
-          return (
-            <Indicator
-              startValue={startValue}
-              endValue={endValue}
-              trackHeight={height}
-              trackWidth={trackWidth}
-              markerSize={markerSize}
-              borderWidth={borderWidth}
-              onChange={onChange}
-              gapPx={gapPx}
-            />
-          );
-        }}
-      />
-    </View>
+    <Track
+      height={height}
+      renderIndicator={(trackWidth: number) => {
+        return (
+          <Indicator
+            startValue={startValue}
+            endValue={endValue}
+            trackHeight={height}
+            trackWidth={trackWidth}
+            markerSize={markerSize}
+            borderWidth={borderWidth}
+            onChange={onChange}
+            gapPx={gapPx}
+          />
+        );
+      }}
+    />
   );
 };

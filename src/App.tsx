@@ -16,7 +16,9 @@ export const App = () => {
         <Trimmer
           startValue={0}
           endValue={1000}
-          markerSize={100}
+          markerSize={24}
+          height={100}
+          borderWidth={4}
           onChange={(start, end) => {
             setStartValue(Math.round(start));
             setEndValue(Math.round(end));
