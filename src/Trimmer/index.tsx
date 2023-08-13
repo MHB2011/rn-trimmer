@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+
 import {Indicator} from './Indicator';
 import {Track} from './Track';
 
