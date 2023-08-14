@@ -15,6 +15,8 @@ interface MarkerProps {
   markerSize: number;
   borderWidth: number;
   onChange?: (start: number, end: number) => void;
+  markerColor: string;
+  renderCustomMarker?: (position: Position) => React.ReactNode;
 }
 
 export const Marker = ({
@@ -29,6 +31,8 @@ export const Marker = ({
   onChange,
   min,
   max,
+  markerColor,
+  renderCustomMarker,
 }: MarkerProps) => {
   const startX = useSharedValue(position === 'left' ? startPx : endPx);
 
@@ -38,8 +42,9 @@ export const Marker = ({
       trackHeight,
       markerSize,
       borderWidth,
+      markerColor,
     });
-  }, [borderWidth, markerSize, position, trackHeight]);
+  }, [borderWidth, markerColor, markerSize, position, trackHeight]);
 
   function onUpdate(translationX: number) {
     'worklet';
@@ -84,29 +89,51 @@ export const Marker = ({
     })
     .onEnd(onEnd);
 
+  const customMarkerContainerStyle = getCustomMarkerContainerStyle(position);
+
   return (
     <GestureDetector gesture={gesture}>
-      <View style={markerStyle} />
+      {renderCustomMarker ? (
+        <View style={customMarkerContainerStyle}>
+          {renderCustomMarker(position)}
+        </View>
+      ) : (
+        <View style={markerStyle} />
+      )}
     </GestureDetector>
   );
 };
 
 export type Position = 'left' | 'right';
 
+const getCustomMarkerContainerStyle = (position: Position): ViewStyle => {
+  return position === 'left'
+    ? {
+        position: 'absolute',
+        left: 0,
+      }
+    : {
+        position: 'absolute',
+        right: 0,
+      };
+};
+
 const getMarkerStyle = ({
   position,
-  trackHeight,
   markerSize,
   borderWidth,
+  trackHeight,
+  markerColor,
 }: {
   position: Position;
-  trackHeight: number;
   markerSize: number;
   borderWidth: number;
+  trackHeight: number;
+  markerColor: string;
 }): ViewStyle => {
   const sharedStyle: ViewStyle = {
     position: 'absolute',
-    backgroundColor: 'plum',
+    backgroundColor: markerColor,
     top: (trackHeight - 2 * borderWidth - markerSize) / 2,
     width: markerSize,
     height: markerSize,

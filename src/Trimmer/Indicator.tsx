@@ -1,10 +1,9 @@
-import React from 'react';
-import {StyleSheet, ViewStyle} from 'react-native';
+import React, {useMemo} from 'react';
+import {StyleSheet, View, ViewStyle} from 'react-native';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Animated, {Extrapolate, interpolate} from 'react-native-reanimated';
-import {Marker} from './Marker';
-import {colors} from './styleConstants';
+import {Marker, Position} from './Marker';
 
 interface IndicatorProp {
   trackHeight: number;
@@ -17,6 +16,10 @@ interface IndicatorProp {
   endValue: number;
   min: number;
   max: number;
+  indicatorColor: string;
+  markerColor: string;
+  backdropColor: string;
+  renderCustomMarker?: (position: Position) => React.ReactNode;
 }
 
 export const Indicator = ({
@@ -30,6 +33,10 @@ export const Indicator = ({
   endValue,
   min,
   max,
+  indicatorColor,
+  markerColor,
+  backdropColor,
+  renderCustomMarker,
 }: IndicatorProp) => {
   const startPx = interpolate(startValue, [min, max], [0, trackWidth], {
     extrapolateLeft: Extrapolate.CLAMP,
@@ -45,13 +52,34 @@ export const Indicator = ({
     left: startPx,
     right: trackWidth - endPx,
     height: trackHeight,
-    backgroundColor: colors.backdrop,
-    borderColor: 'plum',
+    backgroundColor: 'transparent',
+    borderColor: indicatorColor,
     borderWidth: borderWidth,
   };
 
+  const startBackdropViewStyle: ViewStyle = useMemo(
+    () => ({
+      backgroundColor: backdropColor,
+      width: startPx,
+      height: '100%',
+    }),
+    [backdropColor, startPx],
+  );
+  const endBackdropViewStyle: ViewStyle = useMemo(
+    () => ({
+      backgroundColor: backdropColor,
+      width: trackWidth - endPx,
+      position: 'absolute',
+      left: endPx,
+      height: '100%',
+      zIndex: -1,
+    }),
+    [backdropColor, endPx, trackWidth],
+  );
+
   return (
     <GestureHandlerRootView style={S.flex}>
+      <View style={startBackdropViewStyle} />
       <Animated.View style={indicatorStyle}>
         <Marker
           position="left"
@@ -65,6 +93,8 @@ export const Indicator = ({
           gapPx={gapPx}
           min={min}
           max={max}
+          markerColor={markerColor}
+          renderCustomMarker={renderCustomMarker}
         />
         <Marker
           position="right"
@@ -78,12 +108,16 @@ export const Indicator = ({
           gapPx={gapPx}
           min={min}
           max={max}
+          markerColor={markerColor}
+          renderCustomMarker={renderCustomMarker}
         />
       </Animated.View>
+
+      <View style={endBackdropViewStyle} />
     </GestureHandlerRootView>
   );
 };
 
 const S = StyleSheet.create({
-  flex: {flex: 1},
+  flex: {flex: 1, flexDirection: 'row'},
 });

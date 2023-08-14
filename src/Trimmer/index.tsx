@@ -2,6 +2,9 @@ import React from 'react';
 
 import {Indicator} from './Indicator';
 import {Track} from './Track';
+import {colors} from './styleConstants';
+import {ImageSourcePropType, ImageStyle, StyleProp} from 'react-native';
+import {Position} from './Marker';
 
 interface TrimmerProps {
   startValue: number;
@@ -13,6 +16,13 @@ interface TrimmerProps {
   gapPx?: number;
   min: number;
   max: number;
+  trackColor?: string;
+  indicatorColor?: string;
+  markerColor?: string;
+  backdropColor?: string;
+  imageBackgroundSource?: ImageSourcePropType;
+  imageStyle?: StyleProp<ImageStyle>;
+  renderCustomMarker?: (position: Position) => React.ReactNode;
 }
 
 export const Trimmer = ({
@@ -25,13 +35,26 @@ export const Trimmer = ({
   gapPx = 0,
   min,
   max,
+  trackColor = colors.track,
+  indicatorColor = colors.indicator,
+  markerColor = colors.marker,
+  backdropColor = colors.backdrop,
+  imageBackgroundSource,
+  imageStyle,
+  renderCustomMarker,
 }: TrimmerProps) => {
   return (
     <Track
+      trackColor={trackColor}
+      imageBackgroundSource={imageBackgroundSource}
+      imageStyle={imageStyle}
       height={height}
       renderIndicator={(trackWidth: number) => {
         return (
           <Indicator
+            backdropColor={backdropColor}
+            markerColor={markerColor}
+            indicatorColor={indicatorColor}
             startValue={startValue}
             endValue={endValue}
             trackHeight={height}
@@ -42,6 +65,7 @@ export const Trimmer = ({
             gapPx={gapPx}
             min={min}
             max={max}
+            renderCustomMarker={renderCustomMarker}
           />
         );
       }}
