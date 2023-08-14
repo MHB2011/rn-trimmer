@@ -1,12 +1,8 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ViewStyle} from 'react-native';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import Animated, {
-  Extrapolate,
-  interpolate,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import Animated, {Extrapolate, interpolate} from 'react-native-reanimated';
 import {Marker} from './Marker';
 import {colors} from './styleConstants';
 
@@ -44,19 +40,15 @@ export const Indicator = ({
     extrapolateRight: Extrapolate.CLAMP,
   });
 
-  console.log('startPx', startPx, 'endPx', endPx);
-
-  const indicatorStyle = useAnimatedStyle(() => {
-    return {
-      borderColor: 'plum',
-      borderWidth: borderWidth,
-      backgroundColor: colors.backdrop,
-      height: trackHeight,
-      position: 'absolute',
-      left: startPx,
-      right: trackWidth - endPx,
-    };
-  });
+  const indicatorStyle: ViewStyle = {
+    position: 'absolute',
+    left: startPx,
+    right: trackWidth - endPx,
+    height: trackHeight,
+    backgroundColor: colors.backdrop,
+    borderColor: 'plum',
+    borderWidth: borderWidth,
+  };
 
   return (
     <GestureHandlerRootView style={S.flex}>
