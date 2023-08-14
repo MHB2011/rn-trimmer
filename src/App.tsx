@@ -6,18 +6,18 @@ import {colors} from './Trimmer/styleConstants';
 
 export const App = () => {
   const [startValue, setStartValue] = React.useState(0);
-  const [endValue, setEndValue] = React.useState(1000);
+  const [endValue, setEndValue] = React.useState(10000);
 
   return (
     <SafeAreaView style={S.flex}>
       <View style={[S.flex, S.container]}>
-        {/*  Treba li ovo biti kontrolirana komponenta
-        i ako da , kako to izvesti xD */}
         <Trimmer
-          startValue={0}
-          endValue={1000}
+          min={900}
+          max={100000}
+          startValue={startValue}
+          endValue={endValue}
           markerSize={24}
-          height={100}
+          height={50}
           borderWidth={4}
           onChange={(start, end) => {
             setStartValue(Math.round(start));
@@ -27,11 +27,10 @@ export const App = () => {
           }}
           gapPx={50}
         />
-
-        <View>
-          <Text>{`start: ${startValue}, end: ${endValue}`}</Text>
-        </View>
+        <Text>{`start: ${startValue}, end: ${endValue}`}</Text>
       </View>
+
+      {/* <View style={{height: 100}} /> */}
     </SafeAreaView>
   );
 };

@@ -11,6 +11,8 @@ interface TrimmerProps {
   borderWidth?: number;
   onChange?: (start: number, end: number) => void;
   gapPx?: number;
+  min: number;
+  max: number;
 }
 
 export const Trimmer = ({
@@ -21,6 +23,8 @@ export const Trimmer = ({
   borderWidth = 2,
   onChange,
   gapPx = 0,
+  min,
+  max,
 }: TrimmerProps) => {
   return (
     <Track
@@ -36,6 +40,8 @@ export const Trimmer = ({
             borderWidth={borderWidth}
             onChange={onChange}
             gapPx={gapPx}
+            min={min}
+            max={max}
           />
         );
       }}

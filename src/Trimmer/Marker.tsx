@@ -1,41 +1,36 @@
 import React, {useMemo} from 'react';
 import {View, ViewStyle} from 'react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import {
-  SharedValue,
-  interpolate,
-  runOnJS,
-  useSharedValue,
-} from 'react-native-reanimated';
+import {interpolate, runOnJS, useSharedValue} from 'react-native-reanimated';
 
 interface MarkerProps {
-  offsetX: SharedValue<number>;
-  trackWidth: number;
   position: Position;
+  startPx: number; // current start marker X position in px
+  endPx: number; // current end marker X position in px
+  gapPx: number; // gap between markers in px
+  min: number; // users units e.g. 0-1000
+  max: number; // users units e.g. 0-1000
+  trackWidth: number;
   trackHeight: number;
   markerSize: number;
   borderWidth: number;
   onChange?: (start: number, end: number) => void;
-  otherOffsetX: SharedValue<number>;
-  gapPx: number;
-  startValue: number;
-  endValue: number;
 }
 
 export const Marker = ({
-  offsetX,
+  startPx,
+  endPx,
   trackWidth,
   position,
   markerSize,
   borderWidth,
   trackHeight,
-  onChange,
-  otherOffsetX,
   gapPx,
-  startValue,
-  endValue,
+  onChange,
+  min,
+  max,
 }: MarkerProps) => {
-  const startX = useSharedValue(position === 'left' ? 0 : trackWidth);
+  const startX = useSharedValue(position === 'left' ? startPx : endPx);
 
   const markerStyle = useMemo(() => {
     return getMarkerStyle({
@@ -48,17 +43,16 @@ export const Marker = ({
 
   function onUpdate(translationX: number) {
     'worklet';
+
     const newOffsetX = startX.value + translationX;
 
-    const min = position === 'left' ? 0 : otherOffsetX.value + gapPx;
-    const max = position === 'left' ? otherOffsetX.value - gapPx : trackWidth;
+    const minValue = position === 'left' ? 0 : startPx + gapPx;
+    const maxValue = position === 'left' ? endPx - gapPx : trackWidth;
 
-    const clampX = Math.min(Math.max(newOffsetX, min), max);
-
-    offsetX.value = clampX;
+    const clampX = Math.min(Math.max(newOffsetX, minValue), maxValue);
 
     function getInterpolatedValue(value: number) {
-      return interpolate(value, [0, trackWidth], [startValue, endValue]);
+      return interpolate(value, [0, trackWidth], [min, max]);
     }
 
     if (!onChange) {
@@ -66,13 +60,13 @@ export const Marker = ({
     }
     if (position === 'left') {
       runOnJS(onChange)(
-        getInterpolatedValue(offsetX.value),
-        getInterpolatedValue(otherOffsetX.value),
+        getInterpolatedValue(clampX),
+        getInterpolatedValue(endPx),
       );
     } else {
       runOnJS(onChange)(
-        getInterpolatedValue(otherOffsetX.value),
-        getInterpolatedValue(offsetX.value),
+        getInterpolatedValue(startPx),
+        getInterpolatedValue(clampX),
       );
     }
   }
@@ -80,7 +74,7 @@ export const Marker = ({
   function onEnd() {
     'worklet';
 
-    startX.value = offsetX.value;
+    startX.value = position === 'left' ? startPx : endPx;
   }
 
   const gesture = Gesture.Pan()

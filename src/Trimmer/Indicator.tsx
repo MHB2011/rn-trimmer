@@ -3,8 +3,9 @@ import {StyleSheet} from 'react-native';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Animated, {
+  Extrapolate,
+  interpolate,
   useAnimatedStyle,
-  useSharedValue,
 } from 'react-native-reanimated';
 import {Marker} from './Marker';
 import {colors} from './styleConstants';
@@ -18,6 +19,8 @@ interface IndicatorProp {
   gapPx: number;
   startValue: number;
   endValue: number;
+  min: number;
+  max: number;
 }
 
 export const Indicator = ({
@@ -29,9 +32,19 @@ export const Indicator = ({
   gapPx,
   startValue,
   endValue,
+  min,
+  max,
 }: IndicatorProp) => {
-  const startOffsetX = useSharedValue(0);
-  const endOffsetX = useSharedValue(trackWidth);
+  const startPx = interpolate(startValue, [min, max], [0, trackWidth], {
+    extrapolateLeft: Extrapolate.CLAMP,
+    extrapolateRight: Extrapolate.CLAMP,
+  });
+  const endPx = interpolate(endValue, [min, max], [0, trackWidth], {
+    extrapolateLeft: Extrapolate.CLAMP,
+    extrapolateRight: Extrapolate.CLAMP,
+  });
+
+  console.log('startPx', startPx, 'endPx', endPx);
 
   const indicatorStyle = useAnimatedStyle(() => {
     return {
@@ -40,8 +53,8 @@ export const Indicator = ({
       backgroundColor: colors.backdrop,
       height: trackHeight,
       position: 'absolute',
-      left: startOffsetX.value,
-      right: trackWidth - endOffsetX.value,
+      left: startPx,
+      right: trackWidth - endPx,
     };
   });
 
@@ -50,29 +63,29 @@ export const Indicator = ({
       <Animated.View style={indicatorStyle}>
         <Marker
           position="left"
-          offsetX={startOffsetX}
+          startPx={startPx}
+          endPx={endPx}
           trackWidth={trackWidth}
           trackHeight={trackHeight}
           borderWidth={borderWidth}
           markerSize={markerSize}
           onChange={onChange}
-          otherOffsetX={endOffsetX}
           gapPx={gapPx}
-          startValue={startValue}
-          endValue={endValue}
+          min={min}
+          max={max}
         />
         <Marker
           position="right"
-          offsetX={endOffsetX}
+          startPx={startPx}
+          endPx={endPx}
           trackWidth={trackWidth}
           trackHeight={trackHeight}
           borderWidth={borderWidth}
           markerSize={markerSize}
           onChange={onChange}
-          otherOffsetX={startOffsetX}
           gapPx={gapPx}
-          startValue={startValue}
-          endValue={endValue}
+          min={min}
+          max={max}
         />
       </Animated.View>
     </GestureHandlerRootView>
